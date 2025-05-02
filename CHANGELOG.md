@@ -46,8 +46,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-### Fixed
-
 - Story mode medals are now awarded even without scoring a new personal best.
 - Highscores are now submitted to Newgrounds even without scoring a new personal best.
 - The Freeplay menu no longer displays songs without Erect variations when returning from an Erect variation song.
