@@ -2960,19 +2960,6 @@ class ChartEditorState extends UIState // UIState derives from MusicBeatState
       if (noteSnapQuantIndex >= SNAP_QUANTS.length) noteSnapQuantIndex = 0;
     };
 
-    menuBarItemInputStyleNone.onClick = function(event:UIEvent) {
-      currentLiveInputStyle = None;
-    };
-    menuBarItemInputStyleNone.selected = currentLiveInputStyle == None;
-    menuBarItemInputStyleNumberKeys.onClick = function(event:UIEvent) {
-      currentLiveInputStyle = NumberKeys;
-    };
-    menuBarItemInputStyleNumberKeys.selected = currentLiveInputStyle == NumberKeys;
-    menuBarItemInputStyleWASD.onClick = function(event:UIEvent) {
-      currentLiveInputStyle = WASDKeys;
-    };
-    menuBarItemInputStyleWASD.selected = currentLiveInputStyle == WASDKeys;
-
     menubarItemAbout.onClick = _ -> this.openAboutDialog();
     menubarItemWelcomeDialog.onClick = _ -> this.openWelcomeDialog(true);
 
