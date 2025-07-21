@@ -10,7 +10,9 @@ import haxe.ui.containers.dialogs.Dialogs.FileDialogTypes;
 import haxe.ui.containers.dialogs.Dialogs;
 import haxe.ui.ToolkitAssets;
 import openfl.display.BitmapData;
+import haxe.ui.events.UIEvent;
 
+@:access(funkin.ui.debug.stageeditor.StageEditorState)
 @:build(haxe.ui.macros.ComponentMacros.build("assets/exclude/data/ui/stage-editor/toolboxes/object-graphic.xml"))
 class StageEditorObjectGraphicToolbox extends StageEditorDefaultToolbox
 {
@@ -135,7 +137,9 @@ class StageEditorObjectGraphicToolbox extends StageEditorDefaultToolbox
       // Set the names of the frames.
       for (i in 0...linkedObj.frames.frames.length)
       {
-        linkedObj.frames.framesHash.set('Frame$i', linkedObj.frames.frames[i]);
+        @:privateAccess
+        linkedObj.frames.framesByName.set('Frame$i', linkedObj.frames.frames[i]);
+
         linkedObj.frames.frames[i].name = 'Frame$i';
       }
 
@@ -144,6 +148,13 @@ class StageEditorObjectGraphicToolbox extends StageEditorDefaultToolbox
 
       stageEditorState.updateDialog(OBJECT_ANIMS);
     }
+
+    this.onDialogClosed = onClose;
+  }
+
+  function onClose(event:UIEvent)
+  {
+    stageEditorState.menubarItemWindowObjectGraphic.selected = false;
   }
 
   override public function refresh()

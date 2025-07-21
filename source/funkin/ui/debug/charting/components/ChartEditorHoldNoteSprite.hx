@@ -32,8 +32,9 @@ class ChartEditorHoldNoteSprite extends SustainTrail
   @:nullSafety(Off)
   function set_noteStyle(value:Null<String>):Null<String>
   {
+    @:bypassAccessor final dirty:Bool = this.noteStyle != value;
     this.noteStyle = value;
-    this.updateHoldNoteGraphic();
+    if (dirty) this.updateHoldNoteGraphic();
     return value;
   }
 
@@ -71,7 +72,7 @@ class ChartEditorHoldNoteSprite extends SustainTrail
   }
 
   @:nullSafety(Off)
-  function updateHoldNoteGraphic():Void
+  public function updateHoldNoteGraphic():Void
   {
     var bruhStyle:Null<NoteStyle> = NoteStyleRegistry.instance.fetchEntry(noteStyle);
     if (bruhStyle == null) bruhStyle = NoteStyleRegistry.instance.fetchDefault();
