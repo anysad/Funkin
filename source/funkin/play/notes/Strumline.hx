@@ -946,7 +946,6 @@ class Strumline extends FlxSpriteGroup
   {
     if (note == null) return;
     note.visible = false;
-    notes.remove(note, false);
     note.kill();
 
     if (note.holdNoteSprite != null)
