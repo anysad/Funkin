@@ -213,9 +213,8 @@ class ChartEditorEventDataToolbox extends ChartEditorBaseToolbox
         case ENUM:
           var dropDown:DropDown = new DropDown();
           dropDown.id = field.name;
-          dropDown.width = 200.0;
+          dropDown.percentWidth = 100;
           dropDown.dropdownSize = 10;
-          dropDown.dropdownWidth = 300;
           dropDown.searchable = true;
           dropDown.dataSource = new ArrayDataSource();
 
@@ -249,6 +248,7 @@ class ChartEditorEventDataToolbox extends ChartEditorBaseToolbox
 
       // Putting in a box so we can add a unit label easily if there is one.
       var inputBox:HBox = new HBox();
+      inputBox.percentWidth = 100;
       inputBox.addComponent(input);
 
       // Add a unit label if applicable.
