@@ -1887,8 +1887,6 @@ class FreeplayState extends MusicBeatSubState
       var targetSongID = grpCapsules.members[curSelected]?.freeplayData?.data.id ?? 'unknown';
       if (targetSongID == 'unknown')
       {
-        trace('CHART RANDOM SONG');
-
         var availableSongCapsules:Array<SongMenuItem> = grpCapsules.members.filter(function(cap:SongMenuItem)
         {
           // Dead capsules are ones which were removed from the list when changing filters.
@@ -1922,6 +1920,7 @@ class FreeplayState extends MusicBeatSubState
         uiStateMachine.transition(Idle);
         return;
       }
+
       var targetSong:Song = targetSongNullable;
       var targetDifficulty:Null<SongDifficulty> = targetSong.getDifficulty(currentDifficulty, currentVariation);
       if (targetDifficulty == null)
@@ -1933,9 +1932,6 @@ class FreeplayState extends MusicBeatSubState
 
       FlxG.switchState(() -> new StageEditorState({
         targetStageId: targetDifficulty.stage,
-        targetBfChar: targetDifficulty.characters.player,
-        targetGfChar: targetDifficulty.characters.girlfriend,
-        targetDadChar: targetDifficulty.characters.opponent
       }));
       return;
     }
