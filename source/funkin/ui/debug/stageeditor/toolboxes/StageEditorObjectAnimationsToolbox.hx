@@ -46,13 +46,11 @@ class StageEditorObjectAnimationsToolbox extends StageEditorBaseToolbox
 
   function onClose(event:UIEvent)
   {
-    stageEditorState.menubarItemWindowObjectAnimations.selected = false;
+    stageEditorState.menubarItemWindowObjectAnims.selected = false;
   }
 
   public override function refresh():Void
   {
     super.refresh();
-
-
   }
 }

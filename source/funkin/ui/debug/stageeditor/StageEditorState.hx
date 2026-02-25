@@ -81,6 +81,7 @@ class StageEditorState extends UIState
    * ==============================
    */
   public static final STAGE_EDITOR_TOOLBOX_OBJECT_GRAPHIC_LAYOUT:String = Paths.ui('stage-editor/toolboxes/object-graphic');
+
   public static final STAGE_EDITOR_TOOLBOX_OBJECT_PROPERTIES_LAYOUT:String = Paths.ui('stage-editor/toolboxes/object-properties');
   public static final STAGE_EDITOR_TOOLBOX_OBJECT_ANIMATIONS_LAYOUT:String = Paths.ui('stage-editor/toolboxes/object-anims');
   public static final STAGE_EDITOR_TOOLBOX_CHARACTER_LAYOUT:String = Paths.ui('stage-editor/toolboxes/character-properties');
@@ -124,11 +125,8 @@ class StageEditorState extends UIState
   /**
    * Default positions of characters when creating a blank new stage.
    */
-  public static final DEFAULT_POSITIONS:Map<CharacterType, Array<Float>> = [
-    CharacterType.BF => [989.5, 885],
-    CharacterType.GF => [751.5, 787],
-    CharacterType.DAD => [335, 885]
-  ];
+  public static final DEFAULT_POSITIONS:Map<CharacterType,
+    Array<Float>> = [CharacterType.BF => [989.5, 885], CharacterType.GF => [751.5, 787], CharacterType.DAD => [335, 885]];
 
   public static final MAX_Z_INDEX:Int = 10000;
 
@@ -138,11 +136,8 @@ class StageEditorState extends UIState
    * Red -> `Girlfriend/Spectator`
    * Purple -> `Dad/Opponent`
    */
-  public static final CHARACTER_COLORS:Map<CharacterType, FlxColor> = [
-    CharacterType.BF => FlxColor.CYAN,
-    CharacterType.GF => FlxColor.RED,
-    CharacterType.DAD => FlxColor.PURPLE
-  ];
+  public static final CHARACTER_COLORS:Map<CharacterType,
+    FlxColor> = [CharacterType.BF => FlxColor.CYAN, CharacterType.GF => FlxColor.RED, CharacterType.DAD => FlxColor.PURPLE];
 
   /**
    * Time before the animation stops being previewed.
@@ -345,12 +340,12 @@ class StageEditorState extends UIState
 
   function get_shouldShowBackupAvailableDialog():Bool
   {
-    return Save.instance.stageEditorHasBackup && StageEditorImportExportHandler.getLatestBackupPath() != null;
+    return Save.instance.stageEditorHasBackup.value && StageEditorImportExportHandler.getLatestBackupPath() != null;
   }
 
   function set_shouldShowBackupAvailableDialog(value:Bool):Bool
   {
-    return Save.instance.stageEditorHasBackup = value;
+    return Save.instance.stageEditorHasBackup.value = value;
   }
 
   /**
@@ -388,7 +383,8 @@ class StageEditorState extends UIState
     if (previousWorkingFilePaths.contains(null))
     {
       // Filter all instances of `null` from the array.
-      previousWorkingFilePaths = previousWorkingFilePaths.filter(function(x:Null<String>):Bool {
+      previousWorkingFilePaths = previousWorkingFilePaths.filter(function(x:Null<String>):Bool
+      {
         return x != null;
       });
     }
@@ -584,7 +580,7 @@ class StageEditorState extends UIState
   /**
    * The `View -> View Characters` menu check box.
    */
-  var menubarItemViewCharacters:MenuCheckBox;
+  var menubarItemViewChars:MenuCheckBox;
 
   /**
    * The `View -> View Name Text` menu check box.
@@ -615,13 +611,7 @@ class StageEditorState extends UIState
 
   function get_menubarSpriteDependent():Array<MenuItem>
   {
-    return [
-      menubarItemCopy,
-      menubarItemCut,
-      menubarItemFlipX,
-      menubarItemFlipY,
-      menubarItemDelete
-    ];
+    return [menubarItemCopy, menubarItemCut, menubarItemFlipX, menubarItemFlipY, menubarItemDelete];
   }
 
   /**
@@ -867,7 +857,7 @@ class StageEditorState extends UIState
 
   function playWelcomeMusic():Void
   {
-    FunkinSound.playMusic('chartEditorLoop', { startingVolume: 0.0 });
+    FunkinSound.playMusic('chartEditorLoop', {startingVolume: 0.0});
     FlxG.sound.music.fadeIn(10, 0, 1);
   }
 
@@ -877,16 +867,16 @@ class StageEditorState extends UIState
 
     if (previousWorkingFilePaths[0] == null)
     {
-      previousWorkingFilePaths = [null].concat(save.stageEditorPreviousFiles);
+      previousWorkingFilePaths = [null].concat(save.stageEditorPreviousFiles.value);
     }
     else
     {
-      previousWorkingFilePaths = [currentWorkingFilePath].concat(save.stageEditorPreviousFiles);
+      previousWorkingFilePaths = [currentWorkingFilePath].concat(save.stageEditorPreviousFiles.value);
     }
 
-    moveStepIndex = BASE_STEPS.indexOf(Std.parseInt(StringTools.replace(save.stageEditorMoveStep ?? "0px", "px", "")) ?? BASE_STEP);
-    angleStepIndex = BASE_ANGLES.indexOf(save.stageEditorAngleStep);
-    currentTheme = save.stageEditorTheme;
+    moveStepIndex = BASE_STEPS.indexOf(Std.parseInt(StringTools.replace(save.stageEditorMoveStep.value ?? "0px", "px", "")) ?? BASE_STEP);
+    angleStepIndex = BASE_ANGLES.indexOf(save.stageEditorAngleStep.value);
+    currentTheme = save.stageEditorTheme.value;
   }
 
   public function writePreferences(hasBackup:Bool):Void
@@ -896,14 +886,14 @@ class StageEditorState extends UIState
     var filteredWorkingFilePaths:Array<String> = [];
     for (path in previousWorkingFilePaths)
       if (path != null) filteredWorkingFilePaths.push(path);
-    save.stageEditorPreviousFiles = filteredWorkingFilePaths;
+    save.stageEditorPreviousFiles.value = filteredWorkingFilePaths;
 
     if (hasBackup) trace('Queuing backup prompt for next time!');
-    save.stageEditorHasBackup = hasBackup;
+    save.stageEditorHasBackup.value = hasBackup;
 
-    save.stageEditorMoveStep = '${moveStep}px';
-    save.stageEditorAngleStep = angleStep;
-    save.stageEditorTheme = currentTheme;
+    save.stageEditorMoveStep.value = '${moveStep}px';
+    save.stageEditorAngleStep.value = angleStep;
+    save.stageEditorTheme.value = currentTheme;
   }
 
   public function populateOpenRecentMenu():Void
@@ -1090,12 +1080,10 @@ class StageEditorState extends UIState
     {
       this.exportAllStageData(true, null);
       var absoluteBackupsPath:String = Path.join([Sys.getCwd(), StageEditorImportExportHandler.BACKUPS_PATH]);
-      this.infoWithActions('Auto-Save', 'Stage auto-saved to ${absoluteBackupsPath}.', [
-        {
-          text: "Take Me There",
-          callback: openBackupsFolder,
-        }
-      ]);
+      this.infoWithActions('Auto-Save', 'Stage auto-saved to ${absoluteBackupsPath}.', [{
+        text: "Take Me There",
+        callback: openBackupsFolder,
+      }]);
     }
     #end
   }
@@ -1190,7 +1178,8 @@ class StageEditorState extends UIState
         if (prop.danceEvery > 0 && conductorInUse.currentBeat % prop.danceEvery == 0) prop.dance(true);
       }
 
-      if (conductorInUse.currentBeat % 8 == 0 && !FlxG.keys.pressed.SHIFT) {
+      if (conductorInUse.currentBeat % 8 == 0 && !FlxG.keys.pressed.SHIFT)
+      {
         currentPreviewedCharacter++;
         if (currentPreviewedCharacter >= [for (c in characters) c].length) currentPreviewedCharacter = 0;
       }
@@ -1249,29 +1238,34 @@ class StageEditorState extends UIState
     /**
      * VIEW
      */
-    menubarItemThemeLight.onChange = function(event:UIEvent) {
+    menubarItemThemeLight.onChange = function(event:UIEvent)
+    {
       if (event.target.value) currentTheme = StageEditorTheme.Light;
     };
     menubarItemThemeLight.selected = currentTheme == StageEditorTheme.Light;
 
-    menubarItemThemeDark.onChange = function(event:UIEvent) {
+    menubarItemThemeDark.onChange = function(event:UIEvent)
+    {
       if (event.target.value) currentTheme = StageEditorTheme.Dark;
     };
     menubarItemThemeDark.selected = currentTheme == StageEditorTheme.Dark;
 
-    menubarItemViewCharacters.onChange = _ -> {
+    menubarItemViewChars.onChange = _ ->
+    {
       for (charType => character in characters)
-        character.visible = menubarItemViewCharacters.selected;
+        character.visible = menubarItemViewChars.selected;
     }
 
     menubarItemViewNameText.onChange = _ -> objectNameText.visible = menubarItemViewNameText.selected;
 
-    menubarItemViewFloorLines.onChange = _ -> {
+    menubarItemViewFloorLines.onChange = _ ->
+    {
       for (floorLine in characterFloorLines)
         floorLine.visible = menubarItemViewFloorLines.selected;
     }
 
-    menubarItemViewPosMarkers.onChange = _ -> {
+    menubarItemViewPosMarkers.onChange = _ ->
+    {
       for (positionMarker in characterPositionMarkers)
         positionMarker.visible = menubarItemViewPosMarkers.selected;
     }
@@ -1305,7 +1299,8 @@ class StageEditorState extends UIState
     /**
      * BOTTOM BAR
      */
-    bottomBarModeText.onClick = _ -> {
+    bottomBarModeText.onClick = _ ->
+    {
       // This is by far the worst code that I have ever written.
       if (isInTestMode) return;
       switch (currentSelectionMode)
@@ -1327,7 +1322,8 @@ class StageEditorState extends UIState
       }
     }
 
-    bottomBarSelectText.onClick = _ -> {
+    bottomBarSelectText.onClick = _ ->
+    {
       if (isInTestMode)
       {
         currentPreviewedCharacter++;
@@ -1365,7 +1361,8 @@ class StageEditorState extends UIState
       }
     }
 
-    bottomBarMoveStepText.onClick = _ -> {
+    bottomBarMoveStepText.onClick = _ ->
+    {
       if (FlxG.keys.pressed.SHIFT)
       {
         moveStepIndex = BASE_STEP_INDEX;
@@ -1376,11 +1373,13 @@ class StageEditorState extends UIState
         if (moveStepIndex >= BASE_STEPS.length) moveStepIndex = 0;
       }
     }
-    bottomBarMoveStepText.onRightClick = _ -> {
+    bottomBarMoveStepText.onRightClick = _ ->
+    {
       moveStepIndex--;
       if (moveStepIndex < 0) moveStepIndex = BASE_STEPS.length - 1;
     }
-    bottomBarAngleStepText.onClick = _ -> {
+    bottomBarAngleStepText.onClick = _ ->
+    {
       if (FlxG.keys.pressed.SHIFT)
       {
         angleStepIndex = BASE_ANGLE_INDEX;
@@ -1391,7 +1390,8 @@ class StageEditorState extends UIState
         if (angleStepIndex >= BASE_ANGLES.length) angleStepIndex = 0;
       }
     }
-    bottomBarAngleStepText.onRightClick = _ -> {
+    bottomBarAngleStepText.onRightClick = _ ->
+    {
       angleStepIndex--;
       if (angleStepIndex < 0) angleStepIndex = BASE_ANGLES.length - 1;
     }
@@ -1548,8 +1548,12 @@ class StageEditorState extends UIState
         cameraBounds.members[i].redrawShape();
       }
 
-      cameraBounds.members[i].x = character.cameraFocusPoint.x + Reflect.field(currentCharacters, charType).cameraOffsets[0] - cameraBounds.members[i].shapeWidth / 2;
-      cameraBounds.members[i].y = character.cameraFocusPoint.y + Reflect.field(currentCharacters, charType).cameraOffsets[1] - cameraBounds.members[i].shapeHeight / 2;
+      cameraBounds.members[i].x = character.cameraFocusPoint.x
+        + Reflect.field(currentCharacters, charType).cameraOffsets[0]
+        - cameraBounds.members[i].shapeWidth / 2;
+      cameraBounds.members[i].y = character.cameraFocusPoint.y
+        + Reflect.field(currentCharacters, charType).cameraOffsets[1]
+        - cameraBounds.members[i].shapeHeight / 2;
     }
   }
 
@@ -1633,10 +1637,7 @@ class StageEditorState extends UIState
           {
             dragTargetItem = selectedProp;
             dragStartPositions = [selectedProp.x, selectedProp.y];
-            dragOffset = [
-              FlxG.mouse.getWorldPosition().x - selectedProp.x,
-              FlxG.mouse.getWorldPosition().y - selectedProp.y
-            ];
+            dragOffset = [FlxG.mouse.getWorldPosition().x - selectedProp.x, FlxG.mouse.getWorldPosition().y - selectedProp.y];
             dragWasMoving = false;
           }
 
@@ -1692,14 +1693,14 @@ class StageEditorState extends UIState
 
           if (selectedCharacter == null) return;
 
-          if (FlxG.mouse.justPressed && FlxG.mouse.pixelPerfectCheck(selectedCharacter) && !FlxG.keys.pressed.SHIFT && !isCursorOverHaxeUI)
+          if (FlxG.mouse.justPressed
+            && FlxG.mouse.pixelPerfectCheck(selectedCharacter)
+            && !FlxG.keys.pressed.SHIFT
+            && !isCursorOverHaxeUI)
           {
             dragTargetItem = selectedCharacter;
             dragStartPositions = [selectedCharacter.x, selectedCharacter.y];
-            dragOffset = [
-              FlxG.mouse.getWorldPosition().x - selectedCharacter.x,
-              FlxG.mouse.getWorldPosition().y - selectedCharacter.y
-            ];
+            dragOffset = [FlxG.mouse.getWorldPosition().x - selectedCharacter.x, FlxG.mouse.getWorldPosition().y - selectedCharacter.y];
             dragWasMoving = false;
           }
 
@@ -1760,10 +1761,12 @@ class StageEditorState extends UIState
       if (currentWorkingFilePath == null || FlxG.keys.pressed.SHIFT)
       {
         // CTRL + SHIFT + S = Save As
-        this.exportAllStageData(false, null, function(path:String) {
+        this.exportAllStageData(false, null, function(path:String)
+        {
           // CTRL + SHIFT + S Successful
           this.success('Saved Stage', 'Stage saved successfully to ${path}.');
-        }, function() {
+        }, function()
+        {
           // CTRL + SHIFT + S Cancelled
         });
       }
@@ -1800,7 +1803,9 @@ class StageEditorState extends UIState
     }
 
     // CTRL + F = Find Object
-    if (pressingControl() && FlxG.keys.justPressed.F) {}
+    if (pressingControl() && FlxG.keys.justPressed.F)
+    {
+    }
 
     // CTRL + C = Copy Object
     if (pressingControl() && FlxG.keys.justPressed.C)
@@ -1809,10 +1814,14 @@ class StageEditorState extends UIState
     }
 
     // CTRL + X = Cut Object
-    if (pressingControl() && FlxG.keys.justPressed.X) {}
+    if (pressingControl() && FlxG.keys.justPressed.X)
+    {
+    }
 
     // CTRL + V = Paste Object
-    if (pressingControl() && FlxG.keys.justPressed.V) {}
+    if (pressingControl() && FlxG.keys.justPressed.V)
+    {
+    }
 
     // CTRL + H = Flip Horizontally
     if (pressingControl() && FlxG.keys.justPressed.H)
@@ -1915,7 +1924,7 @@ class StageEditorState extends UIState
     {
       if (character == selectedCharacter) continue;
 
-      character.shader = isInTestMode? (currentSelectionMode == CHARACTERS ? CHARACTER_DESELECT_SHADER : cast null) : cast null;
+      character.shader = isInTestMode ? (currentSelectionMode == CHARACTERS ? CHARACTER_DESELECT_SHADER : cast null) : cast null;
     }
     isInTestMode = !isInTestMode;
     menubarMenuFile.disabled = menubarMenuEdit.disabled = bottomBarModeText.disabled = menubarMenuWindow.disabled = isInTestMode;
